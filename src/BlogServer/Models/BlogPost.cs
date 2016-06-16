@@ -10,6 +10,8 @@ namespace BlogServer.Models
         public string Title { get; set; }
         [Display(Name = "Post Date")]
         [DataType(DataType.DateTime)]
+        // TODO move this logic to the controller, 
+        // From what I remember you mentioned that models should just be data objects
         public DateTime Date {
             get { return (Creation == DateTime.MinValue) ? DateTime.Now : Creation; }
             set { Creation = value; }
