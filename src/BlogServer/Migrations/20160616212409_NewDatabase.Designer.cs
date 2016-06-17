@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using BlogServer.Data;
 
-namespace BlogServer.Data.Migrations
+namespace BlogServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160614185217_AppUser")]
-    partial class AppUser
+    [Migration("20160616212409_NewDatabase")]
+    partial class NewDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,11 +29,17 @@ namespace BlogServer.Data.Migrations
                     b.Property<string>("Email")
                         .HasAnnotation("MaxLength", 256);
 
+                    b.Property<string>("EmailAddress");
+
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("LoginName");
+
+                    b.Property<string>("NameIdentifier");
 
                     b.Property<string>("NormalizedEmail")
                         .HasAnnotation("MaxLength", 256);
@@ -70,19 +76,25 @@ namespace BlogServer.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Body");
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 10000);
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("Options");
+                    b.Property<bool>("EditAndDeletePermissions");
 
-                    b.Property<string>("OwnerId");
+                    b.Property<string>("LoginName");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("NameIdentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 50);
+
+                    b.Property<int>("VisitCount");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("OwnerId");
 
                     b.ToTable("BlogPost");
                 });
@@ -192,13 +204,6 @@ namespace BlogServer.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("BlogServer.Models.BlogPost", b =>
-                {
-                    b.HasOne("BlogServer.Models.ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("OwnerId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>

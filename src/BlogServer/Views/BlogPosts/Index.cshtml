@@ -2,53 +2,78 @@
 
 @{
     ViewData["Title"] = "Index";
+
 }
 
-<h2>Previous Posts</h2>
+<h2>Justin's Blog</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<a asp-action="Create" class="btn btn-default pull-right">Create New Post!</a>
+<div class="row">
+    <div class="dropdown pull-right ">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Sort By<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            <li><a href="@Url.Action("Index", new {id = 0})" (">Date added (newest)</a></li>
+            <li><a href="@Url.Action("Index", new {id = 1})" (">Date added (oldest)</a></li>
+            <li><a href="@Url.Action("Index", new {id = 2})" (">Most Popular</a></li>
+        </ul>
+    </div>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
+                
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Owner)
+                @Html.DisplayNameFor(model => model.NameIdentifier)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Options)
+                Actions
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.VisitCount)
+            </th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
+            <td width="35%">
+                <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Title)</a>
             </td>
-            <td>
+            <td width="25%">
                 @Html.DisplayFor(modelItem => item.Date)
+                <br />
+                @if (item.EditedDate != DateTime.MinValue) {
+                    <em>
+                        Edited on: @Html.DisplayFor(modelItem => item.EditedDate)
+                    </em>
+                }   
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Creator)
+            <td width="15%">
+                @Html.DisplayFor(modelItem => item.LoginName)
             </td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a>
-                
-                @if (item.Edited)
+            <td width="15%">
+                <a asp-action="Details" asp-route-id="@item.ID">Body</a>
+                @if (item.EditAndDeletePermissions)
                 {
-                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                     <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
                 }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VisitCount)
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+

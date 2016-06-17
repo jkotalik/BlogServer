@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using BlogServer.Data;
 
-namespace BlogServer.Data.Migrations
+namespace BlogServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20160614172230_Options")]
-    partial class Options
+    [Migration("20160617193001_loginname")]
+    partial class loginname
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,11 +29,17 @@ namespace BlogServer.Data.Migrations
                     b.Property<string>("Email")
                         .HasAnnotation("MaxLength", 256);
 
+                    b.Property<string>("EmailAddress");
+
                     b.Property<bool>("EmailConfirmed");
 
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("LoginName");
+
+                    b.Property<string>("NameIdentifier");
 
                     b.Property<string>("NormalizedEmail")
                         .HasAnnotation("MaxLength", 256);
@@ -70,13 +76,27 @@ namespace BlogServer.Data.Migrations
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Body");
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 10000);
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("Options");
+                    b.Property<bool>("EditAndDeletePermissions");
 
-                    b.Property<string>("Title");
+                    b.Property<DateTime>("EditedDate");
+
+                    b.Property<string>("EmailAddr");
+
+                    b.Property<string>("LoginName");
+
+                    b.Property<string>("NameIdentifier");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasAnnotation("MaxLength", 50);
+
+                    b.Property<int>("VisitCount");
 
                     b.HasKey("ID");
 

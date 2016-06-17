@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BlogServer.Data.Migrations
+namespace BlogServer.Migrations
 {
-    public partial class Owner : Migration
+    public partial class loginname : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Owner",
+                name: "EmailAddr",
                 table: "BlogPost",
                 nullable: true);
         }
@@ -17,7 +17,7 @@ namespace BlogServer.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Owner",
+                name: "EmailAddr",
                 table: "BlogPost");
         }
     }

@@ -36,17 +36,37 @@ namespace BlogServer.Controllers
         }
 
         // GET: BlogPosts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? id)
         {
             var list = await _context.BlogPost.ToListAsync();
-            list.Sort((a, b) => b.Date.CompareTo(a.Date));
+            switch (id)
+            {
+                case 1:
+                    list.Sort((a, b) => a.Date.CompareTo(b.Date));
+                    break;
+                case 2:
+                    list.Sort((a, b) => b.VisitCount.CompareTo(a.VisitCount));
+                    break;
+                default:
+                    list.Sort((a, b) => b.Date.CompareTo(a.Date));
+                    break;
+            }
             foreach (var item in list)
             {
-                item.Edited = item.Owner == NameIdOfPost();
+                item.EditAndDeletePermissions = item.NameIdentifier == NameIdOfPost();
             }
 
             return View(list);
         }
+
+
+        public async Task<IActionResult> Sort(int? id)
+        {
+            var list = await _context.BlogPost.ToListAsync();
+           
+            return View(list);
+        }
+
 
         // GET: BlogPosts/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -62,7 +82,9 @@ namespace BlogServer.Controllers
                 return NotFound();
             }
 
-
+            blogPost.EditAndDeletePermissions = blogPost.NameIdentifier == NameIdOfPost();
+            blogPost.VisitCount++;
+            await _context.SaveChangesAsync();
             return View(blogPost);
         }
 
@@ -83,9 +105,9 @@ namespace BlogServer.Controllers
         {
             if (ModelState.IsValid)
             {
-                blogPost.Owner = NameIdOfPost();
-                blogPost.Creator = LoginNameOfPost();
-                // TODO for tomorrow, figure out why blogpost isnt updating.
+                blogPost.NameIdentifier = NameIdOfPost();
+                blogPost.LoginName = LoginNameOfPost();
+                blogPost.Date = DateTime.Now;
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -107,7 +129,7 @@ namespace BlogServer.Controllers
             {
                 return NotFound();
             }
-            if (blogPost.Owner != NameIdOfPost())
+            if (blogPost.NameIdentifier != NameIdOfPost())
             {
                 return Forbid();
             }
@@ -126,16 +148,24 @@ namespace BlogServer.Controllers
             {
                 return NotFound();
             }
-            // TODO determine if this is valid enough security at this point, Blogpost.owner is null at this point.
 
             if (ModelState.IsValid)
             {
 
                 try
                 {
-                    blogPost.Owner = NameIdOfPost();
-                    blogPost.Creator = LoginNameOfPost();
-                    _context.Update(blogPost);
+                    var existingPost = await _context.BlogPost.SingleOrDefaultAsync(m => m.ID == id);
+                    if (existingPost == null)
+                    {
+                        return NotFound();
+                    }
+                    if (existingPost.NameIdentifier != NameIdOfPost())
+                    {
+                        return Forbid();
+                    }
+                    existingPost.Body = blogPost.Body;
+                    existingPost.Title = blogPost.Title;
+                    existingPost.EditedDate = DateTime.Now;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -155,7 +185,6 @@ namespace BlogServer.Controllers
         }
 
         // GET: BlogPosts/Delete/5
-
         [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
@@ -169,7 +198,7 @@ namespace BlogServer.Controllers
             {
                 return NotFound();
             }
-            if (blogPost.Owner != NameIdOfPost())
+            if (blogPost.NameIdentifier != NameIdOfPost())
             {
                 return Forbid();
             }
@@ -193,6 +222,7 @@ namespace BlogServer.Controllers
         {
             return _context.BlogPost.Any(e => e.ID == id);
         }
+
         private string NameIdOfPost()
         {
             if (this.User != null && this.User.FindFirst(ClaimTypes.NameIdentifier) != null)
@@ -201,6 +231,7 @@ namespace BlogServer.Controllers
             }
             return null;
         }
+
         private string LoginNameOfPost()
         {
             if (this.User != null && this.User.FindFirst(ClaimTypes.Name) != null)

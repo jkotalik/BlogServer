@@ -9,5 +9,8 @@ namespace BlogServer.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        public string EmailAddress { get; set; }
+        public string NameIdentifier { get; set; }
+        public string LoginName { get; set; }
     }
 }
