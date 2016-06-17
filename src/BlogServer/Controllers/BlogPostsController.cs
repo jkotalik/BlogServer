@@ -55,6 +55,7 @@ namespace BlogServer.Controllers
                 case 4:
                     list.Sort((a, b) => b.Title.CompareTo(a.Title));
                     break;
+                case 0:
                 default:
                     // Any other options should result in date ordering.
                     list.Sort((a, b) => b.Date.CompareTo(a.Date));
@@ -64,7 +65,7 @@ namespace BlogServer.Controllers
             // Check if user is allowed to edit post
             foreach (var item in list)
             {
-                item.EditAndDeletePermissions = item.NameIdentifier == NameIdOfPost();
+                item.EditAndDeletePermissions = item.NameIdentifier == NameId;
             }
 
             return View(list);
@@ -84,7 +85,7 @@ namespace BlogServer.Controllers
                 return NotFound();
             }
 
-            blogPost.EditAndDeletePermissions = blogPost.NameIdentifier == NameIdOfPost();
+            blogPost.EditAndDeletePermissions = blogPost.NameIdentifier == NameId;
             blogPost.VisitCount++;
             await _context.SaveChangesAsync();
             return View(blogPost);
@@ -105,9 +106,9 @@ namespace BlogServer.Controllers
         {
             if (ModelState.IsValid)
             {
-                blogPost.NameIdentifier = NameIdOfPost();
-                blogPost.LoginName = LoginNameOfPost();
-                blogPost.Date = DateTime.Now;
+                blogPost.NameIdentifier = NameId;
+                blogPost.LoginName = LoginName;
+                blogPost.Date = DateTime.UtcNow;
                 _context.Add(blogPost);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -129,7 +130,7 @@ namespace BlogServer.Controllers
             {
                 return NotFound();
             }
-            if (blogPost.NameIdentifier != NameIdOfPost())
+            if (blogPost.NameIdentifier != NameId)
             {
                 return Forbid();
             }
@@ -157,14 +158,14 @@ namespace BlogServer.Controllers
                     {
                         return NotFound();
                     }
-                    if (existingPost.NameIdentifier != NameIdOfPost())
+                    if (existingPost.NameIdentifier != NameId)
                     {
                         return Forbid();
                     }
                     // Modify the existing post rather than updating the whole row in the DB.
                     existingPost.Body = blogPost.Body;
                     existingPost.Title = blogPost.Title;
-                    existingPost.EditedDate = DateTime.Now;
+                    existingPost.EditedDate = DateTime.UtcNow;
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -197,7 +198,7 @@ namespace BlogServer.Controllers
             {
                 return NotFound();
             }
-            if (blogPost.NameIdentifier != NameIdOfPost())
+            if (blogPost.NameIdentifier != NameId)
             {
                 return Forbid();
             }
@@ -212,32 +213,19 @@ namespace BlogServer.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var blogPost = await _context.BlogPost.SingleOrDefaultAsync(m => m.ID == id);
+            if (blogPost.NameIdentifier != NameId)
+            {
+                return Forbid();
+            }
             _context.BlogPost.Remove(blogPost);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        private bool BlogPostExists(int id)
-        {
-            return _context.BlogPost.Any(e => e.ID == id);
-        }
+        private bool BlogPostExists(int id) => _context.BlogPost.Any(e => e.ID == id);
 
-        private string NameIdOfPost()
-        {
-            if (this.User != null && this.User.FindFirst(ClaimTypes.NameIdentifier) != null)
-            {
-                return this.User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            }
-            return null;
-        }
+        private string NameId => User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        private string LoginNameOfPost()
-        {
-            if (this.User != null && this.User.FindFirst(ClaimTypes.Name) != null)
-            {
-                return this.User.FindFirst(ClaimTypes.Name).Value;
-            }
-            return null;
-        }
+        private string LoginName => User.FindFirst(ClaimTypes.Name)?.Value;
     }
 }

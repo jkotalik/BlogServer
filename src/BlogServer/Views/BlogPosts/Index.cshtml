@@ -14,7 +14,7 @@
             Sort By<span class="caret"></span>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-            <li><a href="@Url.Action("Index", new {id = 0})" (">Date added (newest)</a></li>
+            <li><a asp-action="Index" asp-route-id="0">Date added (newest)</a></li>
             <li><a href="@Url.Action("Index", new {id = 1})" (">Date added (oldest)</a></li>
             <li><a href="@Url.Action("Index", new {id = 2})" (">Most Popular</a></li>
             <li><a href="@Url.Action("Index", new {id = 3})" (">Alphabetical</a></li>
@@ -62,7 +62,7 @@
                 @Html.DisplayFor(modelItem => item.LoginName)
             </td>
             <td width="15%">
-                <a asp-action="Details" asp-route-id="@item.ID">Body</a>
+                <a asp-action="Details" asp-route-id="@item.ID">View</a>
                 @if (item.EditAndDeletePermissions)
                 {
                     <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>

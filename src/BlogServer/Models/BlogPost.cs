@@ -17,7 +17,7 @@ namespace BlogServer.Models
 
         [Display(Name = "Last Edited")]
         [DataType(DataType.DateTime)]
-        public DateTime EditedDate { get; set; }
+        public DateTime? EditedDate { get; set; }
 
         [Required]
         public string Body { get; set; }
