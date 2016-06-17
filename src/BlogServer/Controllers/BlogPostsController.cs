@@ -49,8 +49,14 @@ namespace BlogServer.Controllers
                 case 2:
                     list.Sort((a, b) => b.VisitCount.CompareTo(a.VisitCount));
                     break;
+                case 3:
+                    list.Sort((a, b) => a.Title.CompareTo(b.Title));
+                    break;
+                case 4:
+                    list.Sort((a, b) => b.Title.CompareTo(a.Title));
+                    break;
                 default:
-                    // Any other options should result in normal ordering.
+                    // Any other options should result in date ordering.
                     list.Sort((a, b) => b.Date.CompareTo(a.Date));
                     break;
             }

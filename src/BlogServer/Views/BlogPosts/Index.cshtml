@@ -5,7 +5,7 @@
 
 }
 
-<h2>Justin's Blog Engine</h2>
+<h2><em>Justin's Blog Engine</em></h2>
 
 <a asp-action="Create" class="btn btn-default pull-right">Create New Post!</a>
 <div class="row">
@@ -17,6 +17,8 @@
             <li><a href="@Url.Action("Index", new {id = 0})" (">Date added (newest)</a></li>
             <li><a href="@Url.Action("Index", new {id = 1})" (">Date added (oldest)</a></li>
             <li><a href="@Url.Action("Index", new {id = 2})" (">Most Popular</a></li>
+            <li><a href="@Url.Action("Index", new {id = 3})" (">Alphabetical</a></li>
+            <li><a href="@Url.Action("Index", new {id = 4})" (">Reverse Alphabetical</a></li>
         </ul>
     </div>
 </div>
@@ -26,7 +28,6 @@
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Title)
-                
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
@@ -43,7 +44,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td width="35%">
                 <a asp-action="Details" asp-route-id="@item.ID">@Html.DisplayFor(modelItem => item.Title)</a>

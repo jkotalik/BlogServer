@@ -20,7 +20,6 @@ namespace BlogServer.Models
         public DateTime EditedDate { get; set; }
 
         [Required]
-        [StringLength(100000, ErrorMessage = "The body must be less than 10000 characters", MinimumLength = 1)]
         public string Body { get; set; }
 
         [Display(Name = "Created By")]
