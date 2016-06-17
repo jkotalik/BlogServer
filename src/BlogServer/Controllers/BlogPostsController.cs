@@ -21,6 +21,7 @@ namespace BlogServer.Controllers
             _context = context;
         }
 
+        // GET: About
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
@@ -28,6 +29,7 @@ namespace BlogServer.Controllers
             return View();
         }
 
+        // GET: Contact
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
@@ -48,9 +50,12 @@ namespace BlogServer.Controllers
                     list.Sort((a, b) => b.VisitCount.CompareTo(a.VisitCount));
                     break;
                 default:
+                    // Any other options should result in normal ordering.
                     list.Sort((a, b) => b.Date.CompareTo(a.Date));
                     break;
             }
+
+            // Check if user is allowed to edit post
             foreach (var item in list)
             {
                 item.EditAndDeletePermissions = item.NameIdentifier == NameIdOfPost();
@@ -59,16 +64,7 @@ namespace BlogServer.Controllers
             return View(list);
         }
 
-
-        public async Task<IActionResult> Sort(int? id)
-        {
-            var list = await _context.BlogPost.ToListAsync();
-           
-            return View(list);
-        }
-
-
-        // GET: BlogPosts/Details/5
+        // GET: BlogPosts/Details/id
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -96,8 +92,6 @@ namespace BlogServer.Controllers
         }
 
         // POST: BlogPosts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -115,7 +109,7 @@ namespace BlogServer.Controllers
             return View(blogPost);
         }
 
-        // GET: BlogPosts/Edit/5
+        // GET: BlogPosts/Edit/id
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -136,9 +130,7 @@ namespace BlogServer.Controllers
             return View(blogPost);
         }
 
-        // POST: BlogPosts/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: BlogPosts/Edit/id
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -163,6 +155,7 @@ namespace BlogServer.Controllers
                     {
                         return Forbid();
                     }
+                    // Modify the existing post rather than updating the whole row in the DB.
                     existingPost.Body = blogPost.Body;
                     existingPost.Title = blogPost.Title;
                     existingPost.EditedDate = DateTime.Now;

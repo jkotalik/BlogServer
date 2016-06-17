@@ -25,9 +25,11 @@
         </dd>
     </dl>
 
-    <!--Hacky approach to add new lines, pls no hate-->
+    <!--Hacky approach to add new lines, refactor into controller with <p> tags-->
     @Html.Raw(Html.Encode(Model.Body).Replace("&#xA;", "<br />"))
-    <br />
+</div>
+<br />
+<div>
     <form asp-action="Delete">
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-danger" />

@@ -4,10 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-
 <div>
-    <h4>BlogPost</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
@@ -23,9 +20,10 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
     </dl>
+    <!--Hacky approach to add new lines, refactor into controller with <p> tags-->
     @Html.Raw(Html.Encode(Model.Body).Replace("&#xA;", "<br />"))
-    <br />
 </div>
+<br />
 <div>
     @if (Model.EditAndDeletePermissions)
     {

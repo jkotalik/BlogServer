@@ -18,8 +18,9 @@ namespace BlogServer.Models
         [Display(Name = "Last Edited")]
         [DataType(DataType.DateTime)]
         public DateTime EditedDate { get; set; }
+
         [Required]
-        [StringLength(10000, ErrorMessage = "The body must be less than 10000 characters", MinimumLength = 1)]
+        [StringLength(100000, ErrorMessage = "The body must be less than 10000 characters", MinimumLength = 1)]
         public string Body { get; set; }
 
         [Display(Name = "Created By")]

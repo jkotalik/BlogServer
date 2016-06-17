@@ -221,7 +221,6 @@
 "C:\git\BlogServer\src\BlogServer\Startup.cs"
 "C:\git\BlogServer\src\BlogServer\Controllers\AccountController.cs"
 "C:\git\BlogServer\src\BlogServer\Controllers\BlogPostsController.cs"
-"C:\git\BlogServer\src\BlogServer\Controllers\HomeController.cs"
 "C:\git\BlogServer\src\BlogServer\Controllers\ManageController.cs"
 "C:\git\BlogServer\src\BlogServer\Data\ApplicationDbContext.cs"
 "C:\git\BlogServer\src\BlogServer\Migrations\20160616212409_NewDatabase.cs"
